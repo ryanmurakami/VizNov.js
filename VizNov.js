@@ -7,9 +7,30 @@
 	See Github for license
 */
 
+/**
+ * VizNovHelper is a utility class for non-OO methods.
+ */
 var VizNovHelper = {
 
-	//returns a jquery element of the box element
+  /**
+   * drawBox takes many parameters to draw an svg-element box,
+   * typically for text (speech), or a button. The method draws
+   * the box in the specificed location and returns a jquery
+   * selector of the box object.
+   *
+   * @method drawBox
+   * @param x the x-coordinate for the box's upper left corner.
+   * @param y the y-coordinate for the box's upper left corner.
+   * @param width the width of the box. Pixels or percentage is okay.
+   * @param height the height of the box. Pixels or percentage is okay.
+   * @param borderRadius defines the curve of the box's corners. Bigger is curvier.
+   * @param id sets the id for the svg element being drawn.
+   * @param classes an array of any additional class tags to add to the svg element
+   * @param theme sort of redundant. adds a class that corresponds to preset themes (in CSS).
+   * @param onClick a function to be run when the svg element is clicked.
+   * @return a javascript selector of the svg element.
+   *
+   */
 	drawBox: function(x, y, width, height, borderRadius, id, classes, theme, onClick) {
 		var newBox = $('#' + id),
 		 	addClass = theme;
@@ -37,6 +58,14 @@ var VizNovHelper = {
         return newBox;
 	},
 
+  /**
+   * stepText writes out your text, one letter at a time.
+   * Includes a little blinking cursor at the end.
+   *
+   * @param targetId the id of the element to write the text at
+   * @param text the text to write
+   * @param speed the speed in milliseconds (1000 = 1 sec)
+   */
 	stepText: function(targetId, text, speed) {
         var textArray = text.split(""),
             loc = 0;
@@ -47,12 +76,12 @@ var VizNovHelper = {
             }
             if(loc >= textArray.length) {
             	var curs = document.createElementNS('http://www.w3.org/2000/svg','image');
-				curs.setAttributeNS(null,'height', '20');
-				curs.setAttributeNS(null,'width', '20');
-				curs.setAttributeNS(null,'id','cursor');
-				curs.setAttributeNS('http://www.w3.org/1999/xlink','href','assets/img/cursor.png');
-				curs.setAttributeNS(null,'x', target.position().left + target.width() + 15);
-				curs.setAttributeNS(null,'y',target.position().top + 5);
+              curs.setAttributeNS(null,'height', '20');
+              curs.setAttributeNS(null,'width', '20');
+              curs.setAttributeNS(null,'id','cursor');
+              curs.setAttributeNS('http://www.w3.org/1999/xlink','href','assets/img/cursor.png');
+              curs.setAttributeNS(null,'x', target.position().left + target.width() + 15);
+				      curs.setAttributeNS(null,'y',target.position().top + 5);
             	$(curs).insertAfter(target);
             	clearInterval(timer);
             	if (game) clearInterval(game.cursorBlink);
@@ -68,6 +97,21 @@ var VizNovHelper = {
         }, speed);
     },
 
+    /**
+     * textBox draws a text in an svg element, for dialogue or buttons
+     *
+     * @param x the x-coordinate for the box's upper left corner.
+	 * @param y the y-coordinate for the box's upper left corner.
+	 * @param width the width of the box. Pixels or percentage is okay.
+	 * @param height the height of the box. Pixels or percentage is okay.
+	 * @param text the text to display
+	 * @param decoration any formatting for the text.
+	 * @param id sets the id for the text element being drawn.
+	 * @param classes an array of any additional class tags to add to the text element
+	 * @param stutter boolean value whether the text should print out all at once (false) or stuttered (true)
+	 * @param onClick a function to be run when the text element is clicked.
+	 * @return a javascript selector of the text element.
+     */
 	textBox: function(x, y, width, height, text, decoration, id, classes, stutter, onClick) {
 		$('#cursor').remove();
 		var textElement = $('#' + id);
@@ -95,8 +139,16 @@ var VizNovHelper = {
 		else
 			textElement.text(text);
 		textElement.click(onClick);
+		return textElement;
 	},
 
+	/**
+	 * showCoices draw a bunch of buttons to choose from.
+	 *
+	 * @param choices an array of text elements for each button
+	 * @param placement not really working, but a string to tell where you want the buttons to be at.
+	 *
+	 */
 	showChoices: function(choices, placement) {
 		var speechBox = $('#speechBox');
 		if($('#character').length !== 0) $('#character').remove();
@@ -177,6 +229,15 @@ var VizNovHelper = {
 		});
 	},
 
+	/**
+	 * getTextDim is kinda stupid. It makes a hidden div and fills
+	 * it with text to see how big it will be on the screen. Currently
+	 * being used to size boxes. Hopefully I'll use it for word wrapping,
+	 * but I really hope there's a better way.
+	 *
+	 * @param text the text
+	 * @return an object with the width and height of the text.
+	 */
 	getTextDim: function(text) {
 		var textDiv = '<div style="display:none;" id="hiddenText"></div>';
 		var body = $('body');
@@ -192,6 +253,11 @@ var VizNovHelper = {
 		};
 	},
 
+	/**
+	 * showBackGround sets the background of your game
+	 *
+	 * @param background a url to the background you want to set
+	 */
 	showBackground: function(background) {
 		var body = $('body');
 		var url = 'url(' + background + ')';
@@ -199,6 +265,13 @@ var VizNovHelper = {
 		//background-image: url(images/menu.png);
 	},
 
+	/**
+	 * showCharacter displays a character on the screen
+	 *
+	 * @param image a url to the image of the character
+	 * @param placement which side of the screen to put the character
+	 * @param style only working is 'dim', which reduces the opacity to 15%
+	 */
 	showCharacter: function(image, placement, style) {
 		var character = $('#character');
 		if(character.length !== 0)
@@ -215,7 +288,7 @@ var VizNovHelper = {
 					img.setAttributeNS(null,'x', window.innerWidth - 550);
 					break;
 				case('left'):
-					img.setAttributeNS(null,'x', 50);					
+					img.setAttributeNS(null,'x', 50);
 					break;
 			}
 			//style stuff
@@ -228,10 +301,21 @@ var VizNovHelper = {
 		}
 	},
 
+	/**
+	 * choiceClick alerts the game to which choice was clicked.
+	 *
+	 * @param node a jquery object of what was clicked.
+	 */
 	choiceClick: function(node) {
 		game.curPath.chosen(node.text());
 	},
 
+	/**
+	 * playSong plays a song. Loops if you to.
+	 *
+	 * @param song a url to an mp3.
+	 * @param loop boolean to loop (true) or not (false)
+	 */
 	playSong: function(song, loop) {
 		game.track = new Audio(song);
 		if(loop)
@@ -242,6 +326,12 @@ var VizNovHelper = {
 		game.track.play();
 	},
 
+	/**
+	 * transition defines a type of transition between scenes and triggers it.
+	 *
+	 * @param type a few options available for now, see below
+	 * @param complete yeah... not implemented. Probably was going to be a callback or something.
+	 */
 	transition: function(type, complete) {
 		if (game) clearInterval(game.cursorBlink);
 		$('svg').empty();
@@ -265,6 +355,12 @@ var VizNovHelper = {
 		}
 	},
 
+	/**
+	 * fileName takes a full path and returns just the filename.
+	 *
+	 * @param file a full url path
+	 * @return just the name of the file
+	 */
 	fileName: function(file) {
 		if(!file) return '';
 		var stringArr = file.split("/");
@@ -350,7 +446,7 @@ var VizNov = function(options) {
 					parent.line(this);
 				});
 			};
-			
+
 			this.exit = function(scene) {
 				this.nextScene = scene;
 				return this;
@@ -369,7 +465,7 @@ var VizNov = function(options) {
 					});
 				} else {
 					if (line.before) line.before();
-					if (line.choice) VizNovHelper.showChoices(line.choice.paths, 'bottom'); 
+					if (line.choice) VizNovHelper.showChoices(line.choice.paths, 'bottom');
 					//nothing to say
 					else if (!line.say && !line.think && !line.sound) game.curPath.nextLine();
 					//lots to say
@@ -381,7 +477,7 @@ var VizNov = function(options) {
 						}
 						var toSay;
 						var decoration;
-						if (line.say) toSay = line.from ? '[' + line.from.name + ']: "' + line.say + '"' : 
+						if (line.say) toSay = line.from ? '[' + line.from.name + ']: "' + line.say + '"' :
 							'"' + line.say + '"';
 						else if (line.think) toSay = line.think;
 						else if (line.sound) {
@@ -416,7 +512,7 @@ var VizNov = function(options) {
 								$('text').remove();
 								game.curPath.nextLine();
 							});
-					} 
+					}
 					if(line.after) line.after();
 				}
 			};
