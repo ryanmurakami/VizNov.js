@@ -5,19 +5,32 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
     uglify: {
       options: {
-        banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
+        banner: '/*! <%= pkg.name %> v.<%= pkg.version %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
       },
       build: {
-        src: '<%= pkg.name %>.js',
-        dest: '<%= pkg.name %>_<%= pkg.version %>.min.js'
+        src: 'scripts/<%= pkg.name %>.js',
+        dest: 'dist/<%= pkg.name %>_<%= pkg.version %>.min.js'
+      }
+    },
+    copy: {
+      toBreathe: {
+        files: [
+          {
+            expand: true,
+            cwd: 'dist/',
+            src: ['<%= pkg.name %>_<%= pkg.version %>.min.js'],
+            dest: '../Breathe/Game/js/'
+          }
+        ]
       }
     }
   });
 
-  // Load the plugin that provides the "uglify" task.
   grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-copy');
 
-  // Default task(s).
-  grunt.registerTask('default', ['uglify']);
+  grunt.registerTask('default', ['build', 'copy2breathe']);
+  grunt.registerTask('build', ['uglify:build']);
+  grunt.registerTask('copy2breathe', ['copy:toBreathe']);
 
 };
