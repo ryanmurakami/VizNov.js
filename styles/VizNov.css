@@ -75,7 +75,7 @@ body
     animation-iteration-count: infinite;
     height: 20px;
     width: 20px;
-    position: fixed;
+    margin-left: 15px;
 }
 
 #mask

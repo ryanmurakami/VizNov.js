@@ -269,10 +269,7 @@ VizNov.prototype.stepText = function(targetId, text, speed) {
         if(loc >= textArray.length) {
         	var cursHtml = '<img id="cursor"' +
         		'src ="assets/img/cursor.png" />';
-    		target.after(cursHtml);
-        	var curs = $('#cursor');
-        	curs.css('left', target.position().left + target.width() + 15);
-        	curs.css('top', target.position().top + 5);
+    		target.append(cursHtml);
         	clearInterval(timer);
         	if (game) clearInterval(game.cursorBlink);
         	game.cursorBlink = setInterval(function() {
